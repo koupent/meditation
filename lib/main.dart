@@ -1,0 +1,16 @@
+import 'package:flutter/material.dart';
+
+import 'view/home_screen.dart';
+
+void main() => runApp(MyApp());
+
+class MyApp extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      title: "Meditation",
+      theme: ThemeData.dark(),
+      home: HomeScreen(),
+    );
+  }
+}
