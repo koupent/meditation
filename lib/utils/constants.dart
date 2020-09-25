@@ -13,3 +13,5 @@ enum RunningStatus {
   PAUSE,
   FINISHED,
 }
+
+const int INITIAL_INTERVAL = 3;

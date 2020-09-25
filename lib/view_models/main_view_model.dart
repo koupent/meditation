@@ -1,4 +1,7 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:meditation/data_models/meiso_theme.dart';
 import 'package:meditation/data_models/user_setting.dart';
 import 'package:meditation/models/managers/ad_manager.dart';
 import 'package:meditation/models/managers/in_app_purchase_manager.dart';
@@ -6,6 +9,7 @@ import 'package:meditation/models/managers/sound_manager.dart';
 import 'package:meditation/models/repositories/shared_prefs_repository.dart';
 import 'package:meditation/utils/constants.dart';
 import 'package:meditation/utils/functions.dart';
+import 'package:meditation/view/home/home_screen.dart';
 
 class MainViewModel extends ChangeNotifier {
   final SharedPrefsRepository sharedPrefsRepository;
@@ -22,7 +26,7 @@ class MainViewModel extends ChangeNotifier {
   String get remainingTimeString => convertTimeFormat(remainingTimeSeconds);
 
   //TODO
-  int intervalRemainingSeconds = 0;
+  int intervalRemainingSeconds = INITIAL_INTERVAL;
 
   //TODO
   double volume = 0.0;
@@ -59,16 +63,58 @@ class MainViewModel extends ChangeNotifier {
     getUserSettings();
   }
 
-  void startMeditation() {}
+  void startMeditation() {
+    runningStatus = RunningStatus.ON_START;
+    notifyListeners();
+
+    intervalRemainingSeconds = INITIAL_INTERVAL;
+    int cnt = 0;
+
+    Timer.periodic(Duration(seconds: 1), (timer) async {
+      cnt++;
+      intervalRemainingSeconds = INITIAL_INTERVAL - cnt;
+
+      if (intervalRemainingSeconds <= 0) {
+        timer.cancel();
+        await prepareSounds();
+        _startMeditationTimer();
+      } else if (runningStatus == RunningStatus.PAUSE) {
+        timer.cancel();
+        resetMeditation();
+      }
+
+      notifyListeners();
+    });
+  }
+
+  Future<void> prepareSounds() async {
+    final levelId = userSettings.levelId;
+    final themeId = userSettings.themeId;
+
+    final isNeedBgm = themeId != THEME_ID_SILENCE;
+    final bgmPath = isNeedBgm ? meisoThemes[themeId].soundPath : null;
+    final bellPath = levels[levelId].bellPath;
+
+    await soundManager.prepareSounds(bellPath, bgmPath, isNeedBgm);
+  }
 
   void resumeMeditation() {}
 
   void resetMeditation() {}
 
-  void pauseMeditation() {}
+  void pauseMeditation() {
+    runningStatus = RunningStatus.PAUSE;
+    notifyListeners();
+  }
 
   void changeVolume(double newVolume) {
     volume = newVolume;
+    notifyListeners();
+  }
+
+  //TODO 瞑想処理
+  void _startMeditationTimer() {
+    runningStatus = RunningStatus.INHALE;
     notifyListeners();
   }
 }
