@@ -9,6 +9,7 @@ class DecoratedBackground extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DecoratedBox(
+      position: DecorationPosition.foreground,
       decoration: BoxDecoration(
         gradient: LinearGradient(
           begin: Alignment.topCenter,
@@ -16,7 +17,6 @@ class DecoratedBackground extends StatelessWidget {
           colors: [Colors.black87, Colors.black26],
         ),
       ),
-      position: DecorationPosition.foreground,
       child: Image.asset(
         theme.imagePath,
         fit: BoxFit.cover,

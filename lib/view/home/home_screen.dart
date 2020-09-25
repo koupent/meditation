@@ -4,7 +4,6 @@ import 'package:meditation/data_models/meiso_theme.dart';
 import 'package:meditation/data_models/meiso_time.dart';
 import 'package:meditation/data_models/user_setting.dart';
 import 'package:meditation/generated/l10n.dart';
-import 'package:meditation/view/home/components/decorated_background.dart';
 import 'package:meditation/view/home/components/header_part.dart';
 import 'package:meditation/view/home/components/play_buttons_part.dart';
 import 'package:meditation/view/home/components/speed_dial_part.dart';
@@ -13,6 +12,8 @@ import 'package:meditation/view/home/components/volume_slider_part.dart';
 import 'package:meditation/view_models/main_view_model.dart';
 import 'package:provider/provider.dart';
 
+import 'components/decorated_background.dart';
+
 List<Level> levels = List();
 List<MeisoTheme> meisoThemes = List();
 List<MeisoTime> meisoTimes = List();
@@ -20,9 +21,9 @@ List<MeisoTime> meisoTimes = List();
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    setLevels(context);
-    setMeisoThemes(context);
-    setMeisoTimes(context);
+    levels = setLevels(context);
+    meisoThemes = setMeisoThemes(context);
+    meisoTimes = setMeisoTimes(context);
 
     final viewModel = Provider.of<MainViewModel>(context, listen: false);
     Future(() => viewModel.getUserSettings());
@@ -38,17 +39,23 @@ class HomeScreen extends StatelessWidget {
                     child: CircularProgressIndicator(),
                   )
                 : Stack(
+                    fit: StackFit.expand,
                     children: <Widget>[
                       DecoratedBackground(
                         theme: meisoThemes[userSettings.themeId],
                       ),
-                      Column(
-                        children: <Widget>[
-                          HeaderPart(),
-                          StatusDisplayPart(),
-                          PlayButtonsPart(),
-                          VolumeSliderPart(),
-                        ],
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: <Widget>[
+                            HeaderPart(
+                              userSettings: userSettings,
+                            ),
+                            StatusDisplayPart(),
+                            PlayButtonsPart(),
+                            VolumeSliderPart(),
+                          ],
+                        ),
                       )
                     ],
                   );
