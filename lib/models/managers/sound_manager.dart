@@ -40,4 +40,31 @@ class SoundManager {
   _loadSound(String soundPath) {
     return rootBundle.load(soundPath).then((value) => _soundPool.load(value));
   }
+
+  Future<void> startBgm(String bellPath, String bgmPath, bool isNeedBgm) async {
+    await _bellPlayer.setVolume(bellVolume);
+    _bellPlayer.play();
+    _bgmPlayer.play();
+  }
+
+  void stopBgm(bool isNeedBgm) {
+    _bellPlayer.stop();
+    if (isNeedBgm) _bgmPlayer.stop();
+  }
+
+  void ringFinalGong() {
+    _soundPool.play(gongSoundId);
+  }
+
+  void changeVolume(double newVolume) {
+    bellVolume = newVolume / 100;
+    _bellPlayer.setVolume(bellVolume);
+    _soundPool.setVolume(soundId: gongSoundId, volume: bellVolume);
+  }
+
+  void dispose() {
+    _soundPool.dispose();
+    _bellPlayer.dispose();
+    _bgmPlayer.dispose();
+  }
 }

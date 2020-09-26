@@ -13,11 +13,14 @@ class StatusDisplayPart extends StatelessWidget {
     return Column(
       children: <Widget>[
         SizedBox(
-          height: 8.0,
+          height: 16.0,
         ),
-        Text(
-          _upperSmallText(context, runningStatus),
-          style: statusUpperTextStyle,
+        SizedBox(
+          height: 50.0,
+          child: Text(
+            _upperSmallText(context, runningStatus),
+            style: statusUpperTextStyle,
+          ),
         ),
         Selector<MainViewModel, int>(
           selector: (context, viewModel) => viewModel.intervalRemainingSeconds,
