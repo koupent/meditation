@@ -59,6 +59,7 @@ class StatusDisplayPart extends StatelessWidget {
         break;
       case RunningStatus.FINISHED:
         displayText = S.of(context).finished;
+        loadInterstitialAd(context);
         break;
     }
     return displayText;
@@ -76,5 +77,10 @@ class StatusDisplayPart extends StatelessWidget {
     }
 
     return displayText;
+  }
+
+  void loadInterstitialAd(BuildContext context) {
+    final viewModel = Provider.of<MainViewModel>(context, listen: false);
+    viewModel.loadInterstitialAd();
   }
 }

@@ -19,6 +19,7 @@ class SpeedDialPart extends StatelessWidget {
             animatedIcon: AnimatedIcons.menu_close,
             backgroundColor: iconTheme.color,
             overlayColor: dialogBackgroundColor,
+            marginBottom: 60.0,
             children: [
               SpeedDialChild(
                 child: FaIcon(FontAwesomeIcons.donate),

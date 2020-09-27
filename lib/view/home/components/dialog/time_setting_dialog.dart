@@ -24,7 +24,7 @@ class TimeSettingDialog extends StatelessWidget {
     );
 
     return Container(
-      height: 180.0,
+      height: 200.0,
       child: Column(
         children: <Widget>[
           SizedBox(
@@ -52,7 +52,7 @@ class TimeSettingDialog extends StatelessWidget {
 
   //TODO
   void _setTime(BuildContext context, int timeMinutes) {
-    final viewModel = Provider.of<MainViewModel>(context,listen: false);
+    final viewModel = Provider.of<MainViewModel>(context, listen: false);
     viewModel.setTime(timeMinutes);
 
     Fluttertoast.showToast(msg: S.of(context).timeAdjusted);

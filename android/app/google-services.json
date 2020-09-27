@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "656207611787",
+    "firebase_url": "https://meditation-34996.firebaseio.com",
+    "project_id": "meditation-34996",
+    "storage_bucket": "meditation-34996.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:656207611787:android:905833fd46a17f3498518e",
+        "android_client_info": {
+          "package_name": "work.koupent.meditation"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "656207611787-e2c3tietihef7maop59287rdcca8a2or.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCi35nLgfCVCZrDe6oynKj8ogKjwzlvrWo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "656207611787-e2c3tietihef7maop59287rdcca8a2or.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -36,7 +36,17 @@ class MainViewModel extends ChangeNotifier {
   //TODO
   double get volume => soundManager.bellVolume * 100;
 
-  MainViewModel({this.sharedPrefsRepository, this.soundManager, this.adManager, this.inAppPurchaseManager});
+  MainViewModel({
+    this.sharedPrefsRepository,
+    this.soundManager,
+    this.adManager,
+    this.inAppPurchaseManager,
+  }) {
+    adManager
+      ..initAdmob()
+      ..initBannerAd()
+      ..initInterstitialAd();
+  }
 
   Future<void> skipIntro() async {
     await sharedPrefsRepository.skipIntro();
@@ -49,6 +59,7 @@ class MainViewModel extends ChangeNotifier {
   Future<void> getUserSettings() async {
     userSettings = await sharedPrefsRepository.getUserSettings();
     remainingTimeSeconds = userSettings.timeMinutes * 60;
+    remainingTimeSeconds = 10; //TODO 削除
     print(remainingTimeString);
     notifyListeners();
   }
@@ -131,6 +142,7 @@ class MainViewModel extends ChangeNotifier {
     runningStatus = RunningStatus.BEFORE_START;
     intervalRemainingSeconds = INITIAL_INTERVAL;
     remainingTimeSeconds = userSettings.timeMinutes * 60;
+    remainingTimeSeconds = 10; //TODO 削除
     timeElapsedInOneCycle = 0;
     notifyListeners();
   }
@@ -220,9 +232,28 @@ class MainViewModel extends ChangeNotifier {
     soundManager.ringFinalGong();
   }
 
+  void loadBannerAd() {
+    adManager.loadBannerAd();
+  }
+
+  void loadInterstitialAd() {
+    adManager.loadInterstitialAd();
+  }
+
   @override
   void dispose() {
-    soundManager.dispose();
     super.dispose();
+    soundManager.dispose();
+    adManager.dispose();
+  }
+
+  //アプリ内課金の初期化処理
+  Future<void> initInAppPurchase() async {
+    await inAppPurchaseManager.init();
+    await getPurchaserInfo();
+  }
+
+  Future<void> getPurchaserInfo() async {
+    await inAppPurchaseManager.getPurchaserInfo();
   }
 }

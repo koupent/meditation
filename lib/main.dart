@@ -1,3 +1,4 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meditation/di/providers.dart';
@@ -8,7 +9,11 @@ import 'package:provider/provider.dart';
 
 import 'generated/l10n.dart';
 
-void main() {
+Future<void> main() async {
+  //メイン関数の中で非同期処理をする場合に必要
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+
   runApp(
     MultiProvider(
       providers: globalProviders,

@@ -25,8 +25,13 @@ class HomeScreen extends StatelessWidget {
     meisoThemes = setMeisoThemes(context);
     meisoTimes = setMeisoTimes(context);
 
-    final viewModel = Provider.of<MainViewModel>(context, listen: false);
-    Future(() => viewModel.getUserSettings());
+    Future(() {
+      final viewModel = context.read<MainViewModel>();
+      viewModel.initInAppPurchase();
+      viewModel
+        ..getUserSettings()
+        ..loadBannerAd();
+    });
 
     return SafeArea(
       child: Scaffold(
