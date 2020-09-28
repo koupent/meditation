@@ -36,6 +36,7 @@ class MainViewModel extends ChangeNotifier {
   //TODO
   double get volume => soundManager.bellVolume * 100;
 
+  //ビューモデルの初回呼び出しのとき、広告の初期化を実行
   MainViewModel({
     this.sharedPrefsRepository,
     this.soundManager,
