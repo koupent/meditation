@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:meditation/data_models/meiso_theme.dart';
 import 'package:meditation/generated/l10n.dart';
 import 'package:meditation/view/common/ripple_widget.dart';
 import 'package:meditation/view/home/home_screen.dart';
@@ -9,6 +11,8 @@ import 'package:provider/provider.dart';
 class ThemeSettingDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final isSubscribed = context.select<MainViewModel, bool>((viewModel) => viewModel.isSubscribed);
+
     return Padding(
       padding: const EdgeInsets.only(top: 24.0, left: 8.0, right: 8.0, bottom: 8.0),
       child: Stack(
@@ -27,15 +31,22 @@ class ThemeSettingDialog extends StatelessWidget {
                   children: List.generate(
                     meisoThemes.length,
                     (index) => RippleWidget(
-                        child: GridTile(
-                          child: Image.asset(meisoThemes[index].imagePath, fit: BoxFit.fill),
-                          footer: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(child: Text(meisoThemes[index].themeName)),
+                        child: Opacity(
+                          opacity: (index == THEME_ID_SILENCE || isSubscribed) ? 1.0 : 0.3,
+                          child: GridTile(
+                            child: Image.asset(meisoThemes[index].imagePath, fit: BoxFit.fill),
+                            footer: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Center(child: Text(meisoThemes[index].themeName)),
+                            ),
                           ),
                         ),
                         onTap: () {
-                          _setTheme(context, index);
+                          if (index == THEME_ID_SILENCE || isSubscribed) {
+                            _setTheme(context, index);
+                          } else {
+                            Fluttertoast.showToast(msg: S.of(context).needSubscribe);
+                          }
                           Navigator.pop(context);
                         }),
                   ),

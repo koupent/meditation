@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:meditation/data_models/meiso_theme.dart';
 import 'package:meditation/data_models/user_setting.dart';
 import 'package:meditation/models/managers/ad_manager.dart';
@@ -36,6 +37,12 @@ class MainViewModel extends ChangeNotifier {
   //TODO
   double get volume => soundManager.bellVolume * 100;
 
+  bool get isDeleteAd => inAppPurchaseManager.isDeleteAd;
+
+  bool get isSubscribed => inAppPurchaseManager.isSubscribed;
+
+  bool isInAppPurchaseProcessing = false;
+
   //ビューモデルの初回呼び出しのとき、広告の初期化を実行
   MainViewModel({
     this.sharedPrefsRepository,
@@ -43,10 +50,7 @@ class MainViewModel extends ChangeNotifier {
     this.adManager,
     this.inAppPurchaseManager,
   }) {
-    adManager
-      ..initAdmob()
-      ..initBannerAd()
-      ..initInterstitialAd();
+    adManager.initAdmob();
   }
 
   Future<void> skipIntro() async {
@@ -256,5 +260,37 @@ class MainViewModel extends ChangeNotifier {
 
   Future<void> getPurchaserInfo() async {
     await inAppPurchaseManager.getPurchaserInfo();
+    await updateAd();
+    notifyListeners();
+  }
+
+  updateAd() {
+    //adManagerのdispose時のエラーを例外処理
+    try {
+      if (!isDeleteAd) {
+        adManager
+          ..initBannerAd()
+          ..initInterstitialAd()
+          ..loadBannerAd();
+      } else {
+        adManager.dispose();
+      }
+    } on PlatformException catch (e) {
+      print("ad dispose error: ${e.message.toString()}");
+      isInAppPurchaseProcessing = false;
+    }
+  }
+
+  Future<void> makePurchase(PurchaseMode purchaseMode) async {
+    isInAppPurchaseProcessing = true;
+    notifyListeners();
+
+    await inAppPurchaseManager.makePurchase(purchaseMode);
+    if (purchaseMode == PurchaseMode.DELETE_AD) {
+      await updateAd();
+    }
+
+    isInAppPurchaseProcessing = false;
+    notifyListeners();
   }
 }

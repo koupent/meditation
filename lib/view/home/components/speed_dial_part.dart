@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:meditation/generated/l10n.dart';
 import 'package:meditation/utils/constants.dart';
@@ -49,14 +50,31 @@ class SpeedDialPart extends StatelessWidget {
           );
   }
 
-  //TODO
-  _donate(BuildContext context) {}
+  //寄付
+  _donate(BuildContext context) {
+    final viewModel = context.read<MainViewModel>();
+    viewModel.makePurchase(PurchaseMode.DONATE);
+  }
 
-  //TODO
-  _deleteAd(BuildContext context) {}
+  // 広告削除
+  _deleteAd(BuildContext context) {
+    final viewModel = context.read<MainViewModel>();
+    if (!viewModel.isDeleteAd) {
+      viewModel.makePurchase(PurchaseMode.DELETE_AD);
+    } else {
+      Fluttertoast.showToast(msg: S.of(context).alreadyPurchased);
+    }
+  }
 
-  //TODO
-  _subscribe(BuildContext context) {}
+  // 月額課金
+  _subscribe(BuildContext context) {
+    final viewModel = context.read<MainViewModel>();
+    if (!viewModel.isSubscribed) {
+      viewModel.makePurchase(PurchaseMode.SUBSCRIPTION);
+    } else {
+      Fluttertoast.showToast(msg: S.of(context).alreadyPurchased);
+    }
+  }
 
   //TODO
   _recoverPurchase(BuildContext context) {}

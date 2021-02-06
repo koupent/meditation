@@ -15,3 +15,9 @@ enum RunningStatus {
 }
 
 const int INITIAL_INTERVAL = 3;
+
+enum PurchaseMode {
+  DONATE,
+  DELETE_AD,
+  SUBSCRIPTION,
+}

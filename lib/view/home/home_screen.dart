@@ -27,10 +27,9 @@ class HomeScreen extends StatelessWidget {
 
     Future(() {
       final viewModel = context.read<MainViewModel>();
-      viewModel.initInAppPurchase();
       viewModel
         ..getUserSettings()
-        ..loadBannerAd();
+        ..initInAppPurchase();
     });
 
     return SafeArea(
@@ -43,26 +42,35 @@ class HomeScreen extends StatelessWidget {
                 ? Center(
                     child: CircularProgressIndicator(),
                   )
-                : Stack(
-                    fit: StackFit.expand,
-                    children: <Widget>[
-                      DecoratedBackground(
-                        theme: meisoThemes[userSettings.themeId],
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
+                : Selector<MainViewModel, bool>(
+                    selector: (context, viewModel) => viewModel.isInAppPurchaseProcessing,
+                    builder: (context, isProcessing, child) => Opacity(
+                      opacity: isProcessing ? 0.25 : 1.0,
+                      child: AbsorbPointer(
+                        absorbing: isProcessing,
+                        child: Stack(
+                          fit: StackFit.expand,
                           children: <Widget>[
-                            HeaderPart(
-                              userSettings: userSettings,
+                            DecoratedBackground(
+                              theme: meisoThemes[userSettings.themeId],
                             ),
-                            StatusDisplayPart(),
-                            PlayButtonsPart(),
-                            VolumeSliderPart(),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                children: <Widget>[
+                                  HeaderPart(
+                                    userSettings: userSettings,
+                                  ),
+                                  StatusDisplayPart(),
+                                  PlayButtonsPart(),
+                                  VolumeSliderPart(),
+                                ],
+                              ),
+                            )
                           ],
                         ),
-                      )
-                    ],
+                      ),
+                    ),
                   );
           },
         ),
